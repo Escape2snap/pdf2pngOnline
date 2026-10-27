@@ -33,6 +33,7 @@ const els = {
   summaryPages: $("summary-pages"),
   summarySize: $("summary-size"),
   summaryMem: $("summary-mem"),
+  summaryBox: $("summary-box"),
   stage: $("stage"),
   previewEmpty: $("preview-empty"),
   previewLoading: $("preview-loading"),
@@ -213,6 +214,7 @@ function resetSummary() {
   els.summarySize.textContent = "—";
   els.summaryMem.textContent = "—";
   els.summaryMem.classList.remove("is-warn");
+  els.summaryBox.hidden = true;
 }
 
 function updateDpiUi() {
@@ -491,6 +493,7 @@ async function updateSummary() {
     if (token !== state.summaryToken) return;
     const pixels = width * height;
     state.firstPageSize = { width, height, pixels };
+    els.summaryBox.hidden = false;
     els.summarySize.textContent = `${formatInt(width)} × ${formatInt(height)} px`;
     els.summaryMem.textContent = `${formatBytes(pixels * 4)} / 页`;
     els.summaryMem.classList.toggle("is-warn", pixels > 40_000_000);
