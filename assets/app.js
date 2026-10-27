@@ -16,7 +16,6 @@ const DEFAULT_DPI = 300;
 const $ = (id) => document.getElementById(id);
 const els = {
   theme: $("theme-switch"),
-  heroDpi: $("hero-dpi"),
   dropzone: $("dropzone"),
   dropEmpty: $("drop-empty"),
   fileInput: $("file-input"),
@@ -223,7 +222,6 @@ function updateDpiUi() {
   els.dpiPresets.querySelectorAll("[data-dpi]").forEach((button) => {
     button.classList.toggle("is-active", Number(button.dataset.dpi) === dpi);
   });
-  if (els.heroDpi) els.heroDpi.textContent = `${dpi} DPI`;
 }
 
 /* ================= 主题 ================= */
