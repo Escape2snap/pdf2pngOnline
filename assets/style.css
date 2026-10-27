@@ -252,6 +252,7 @@ body{
 .hero-sheet-front .mono{font-size:.6rem;letter-spacing:.14em;opacity:.65}
 .hero-sheet-front svg{width:1.9rem;height:1.9rem}
 .hero-sheet-front b{font-size:.72rem;letter-spacing:.1em;color:var(--deep-text);opacity:.55}
+.hero-mobile-mark{display:none}
 .hero-dpi{
   position:absolute;right:.2rem;bottom:.15rem;z-index:2;padding:.36rem .62rem;border-radius:999px;
   background:var(--card-bg);border:1px solid var(--line-color);color:var(--btn-content);
@@ -405,15 +406,29 @@ progress::-moz-progress-bar{background:var(--accent);border-radius:999px}
 }
 @media(max-width:760px){
   .navbar{padding:0 .75rem}
-  .hero{padding:1.25rem 1.15rem}
-  .hero-mark{display:none}
-  .hero h1{font-size:clamp(1.55rem,7vw,2rem)}
   .brand{padding:0 .8rem}
+  .hero{
+    min-height:6.4rem;padding:1.05rem 1.2rem;gap:1rem;
+    background:linear-gradient(120deg,var(--card-bg) 25%,color-mix(in oklab,var(--primary) 13%,var(--card-bg)) 100%);
+  }
+  .hero::after{display:none}
+  .hero-mark{display:none}
+  .hero-mobile-mark{
+    display:flex;flex:0 0 auto;align-items:center;justify-content:center;
+    width:3.4rem;height:3.4rem;border-radius:.9rem;
+    background:var(--card-bg);border:1px solid var(--line-color);color:var(--primary);
+    box-shadow:0 4px 12px rgba(58,17,43,.06);
+  }
+  .hero-mobile-mark svg{width:1.9rem;height:1.9rem}
+  .hero h1{font-size:clamp(1.55rem,7vw,2rem)}
   .preview-stage{height:clamp(18rem,48vh,30rem);min-height:18rem;padding:.75rem}
 }
 @media(max-width:560px){
   .page{padding-left:.65rem;padding-right:.65rem}
   .panel{padding:1rem}
+  .dropzone{min-height:9.8rem;padding:.75rem}
+  .drop-icon{width:2.7rem;height:2.7rem;margin-bottom:.4rem}
+  .drop-icon svg{width:1.7rem;height:1.7rem}
   .actions{gap:.5rem}
   .actions .btn-primary{flex:1 1 100%}
   .actions .btn-regular,.actions .btn-plain{flex:1 1 auto}
