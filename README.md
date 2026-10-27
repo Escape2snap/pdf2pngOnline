@@ -33,6 +33,8 @@ pdf2pngOnline/
 ├── index.html
 ├── favicon.svg
 ├── .gitignore
+├── deploy.sh
+├── deploy.conf.example
 ├── assets/
 │   ├── style.css        Fuwari 设计令牌 + 应用样式
 │   └── app.js           PDF 加载、预览、转换、ZIP、主题
@@ -58,7 +60,7 @@ pdf2pngOnline/
 
 ## 部署
 
-纯静态目录，把 `index.html`、`favicon.svg`、`assets/`、`vendor/` 放进 web 根目录即可。
+部署使用 `./deploy.sh stage` 自检，`./deploy.sh push` 上传。首次使用先复制 `deploy.conf.example` 为 `deploy.conf`（已 gitignore），并按环境填写。
 
 nginx 至少需要正确的 MIME 和缓存：
 

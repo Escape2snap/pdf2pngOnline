@@ -1,0 +1,30 @@
+# 部署配置模板。
+#
+# 复制成 deploy.conf 后按自己的环境修改：
+#
+#     cp deploy.conf.example deploy.conf
+#
+# deploy.conf 已 gitignore，个人参数不会进仓库。
+# 这个文件被 deploy.sh 以 source 方式读取，所以是 shell 语法。
+
+# ssh 目标。可以是 ~/.ssh/config 里的 Host 别名，也可以是 user@host。
+REMOTE=my-server
+
+# 远端站点目录（纯静态文件放这里，需要提前建好并确保有写权限）。
+REMOTE_DIR=/var/www/my-site
+
+# 远端属主。留空则跳过 chown（文件仍会 chmod 成可读）。
+OWNER=www-data:www-data
+
+# 页脚文件。其内容会被注入 index.html 里的 <!--ICP--> 锚点。
+#
+# 中国大陆服务器需要展示 ICP 备案号，把备案信息写进这个文件；
+# 不需要就留空，锚点会被直接删掉。
+#
+# 这个文件同样建议 gitignore —— 备案信息属于部署信息，不该进代码库。
+FOOTER_FILE=deploy/footer.html
+
+# 页脚文件缺失时是否中止部署。
+#   1 = 中止（备案是法定展示项，缺了不该上线）
+#   0 = 警告后继续（默认，方便没有备案需求的部署）
+REQUIRE_FOOTER=0
