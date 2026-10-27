@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PDF 工坊 · PDF 转 PNG</title>
+<meta name="description" content="PDF 转 PNG，DPI 可调。" />
+<meta name="theme-color" content="#f6edf4" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="assets/style.css" />
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem("pdf-theme");
+      var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (dark) document.documentElement.classList.add("dark");
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+<noscript><div class="noscript">需要启用 JavaScript。</div></noscript>
+<div class="page">
+
+  <header class="navbar card-base">
+    <a class="brand btn-plain scale-animation" href="./" aria-label="PDF 工坊首页">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6.5 3.5h7l4 4v13h-11z" />
+        <path d="M13.5 3.5v4h4" />
+        <path d="M12 11.5v5.2" />
+        <path d="m9.9 14.7 2.1 2.1 2.1-2.1" />
+      </svg>
+      <span>PDF 工坊</span>
+    </a>
+    <div class="navbar-right">
+      <button class="btn-plain scale-animation icon-btn" id="theme-switch" type="button" aria-label="切换深浅色">
+        <span class="icon-sun" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M17 12a5 5 0 1 1-10 0a5 5 0 0 1 10 0Z"/>
+            <path stroke-linecap="round" d="M12 2c-.377.333-.905 1.2 0 2m0 16c.377.333.906 1.2 0 2m7.5-17.497c-.532-.033-1.575.22-1.496 1.495M5.496 17.5c.033.532-.22 1.575-1.496 1.496M5.003 4.5c-.033.532.22 1.576 1.497 1.497M18 17.503c.532-.032 1.575.208 1.496 1.414M22 12c-.333-.377-1.2-.905-2 0m-16-.5c-.333.377-1.2.906-2 0"/>
+          </g></svg>
+        </span>
+        <span class="icon-moon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.5 14.469A8.107 8.107 0 0 1 9.531 3.5A9.12 9.12 0 1 0 20.5 14.469m1-2.469A9.5 9.5 0 0 0 12 2.5"/></svg>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero card-base" aria-labelledby="page-title">
+    <div class="hero-copy">
+      <h1 id="page-title">PDF 转 PNG</h1>
+    </div>
+    <div class="hero-mark" aria-hidden="true">
+      <div class="hero-sheet hero-sheet-back"></div>
+      <div class="hero-sheet hero-sheet-front">
+        <span class="mono">PDF</span>
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 8v12" /><path d="m11 16 5 5 5-5" /><path d="M8 24h16" />
+        </svg>
+        <b>PNG</b>
+      </div>
+      <span class="hero-dpi mono" id="hero-dpi">300 DPI</span>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="sidebar">
+
+      <section class="card-base panel upload-panel" aria-labelledby="file-heading">
+        <div class="panel-head">
+          <h2 id="file-heading">文件</h2>
+          <span class="hint" id="file-hint">未选择</span>
+        </div>
+
+        <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="选择 PDF 文件">
+          <input type="file" id="file-input" accept="application/pdf,.pdf" hidden />
+          <div class="drop-empty" id="drop-empty">
+            <div class="drop-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 8h14l8 8v24H13z" />
+                <path d="M27 8v8h8" />
+                <path d="M24 22v10" />
+                <path d="m19.5 27.5 4.5 4.5 4.5-4.5" />
+              </svg>
+            </div>
+            <p class="drop-title">拖入 PDF，或点击选择</p>
+            <p class="drop-sub">最大 100 MB</p>
+          </div>
+
+          <div class="file-card" id="file-card" title="点击更换文件" hidden>
+            <span class="file-type mono">PDF</span>
+            <div class="file-main">
+              <strong id="file-name">document.pdf</strong>
+              <span id="file-meta" class="mono">—</span>
+            </div>
+            <button class="btn-plain scale-animation file-remove" id="file-remove" type="button" aria-label="移除文件">×</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card-base panel settings-panel" aria-labelledby="settings-heading">
+        <div class="panel-head">
+          <h2 id="settings-heading">导出设置</h2>
+          <span class="hint">PNG</span>
+        </div>
+
+        <div class="field">
+          <label for="dpi">分辨率</label>
+          <div class="input-suffix">
+            <input type="number" id="dpi" min="36" max="600" step="1" value="300" inputmode="numeric" />
+            <span class="mono">DPI</span>
+          </div>
+          <div class="preset-row" id="dpi-presets" aria-label="常用分辨率">
+            <button class="chip" type="button" data-dpi="72">72</button>
+            <button class="chip" type="button" data-dpi="96">96</button>
+            <button class="chip" type="button" data-dpi="150">150</button>
+            <button class="chip" type="button" data-dpi="200">200</button>
+            <button class="chip is-active" type="button" data-dpi="300">300</button>
+            <button class="chip" type="button" data-dpi="600">600</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="field">
+          <label class="check" for="all-pages">
+            <input type="checkbox" id="all-pages" checked />
+            <span>导出全部页面</span>
+          </label>
+          <div class="row page-range" id="page-range">
+            <div class="field">
+              <label for="page-from">起始页</label>
+              <input type="number" id="page-from" min="1" step="1" value="1" disabled />
+            </div>
+            <div class="field">
+              <label for="page-to">结束页</label>
+              <input type="number" id="page-to" min="1" step="1" value="1" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-box">
+          <div><span>范围</span><strong id="summary-pages">—</strong></div>
+          <div><span>单页尺寸</span><strong id="summary-size">—</strong></div>
+          <div><span>单页内存</span><strong id="summary-mem">—</strong></div>
+        </div>
+      </section>
+
+    </aside>
+
+    <main class="content">
+
+      <section class="card-base panel preview-panel" aria-labelledby="preview-heading">
+        <div class="panel-head">
+          <h2 id="preview-heading">预览</h2>
+          <span class="hint" id="preview-meta">等待 PDF</span>
+        </div>
+
+        <div class="preview-stage" id="stage">
+          <div class="preview-empty" id="preview-empty">
+            <div class="empty-art" aria-hidden="true">
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="10" y="9" width="32" height="42" rx="3" />
+                <path d="M18 19h16M18 26h16M18 33h10" />
+                <circle cx="45" cy="44" r="10" fill="var(--card-bg)" />
+                <path d="M45 39v7" /><path d="m41.5 42.5 3.5 3.5 3.5-3.5" />
+              </svg>
+            </div>
+            <p>选择 PDF 后预览</p>
+          </div>
+          <div class="preview-loading" id="preview-loading" hidden><span class="spinner"></span>正在解析 PDF…</div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" id="convert" type="button" disabled>开始转换</button>
+          <button class="btn-regular" id="download-zip" type="button" hidden>下载全部 ZIP</button>
+          <button class="btn-plain scale-animation" id="cancel" type="button" hidden>取消</button>
+          <button class="btn-plain scale-animation" id="reset" type="button" hidden>清空</button>
+        </div>
+
+        <div class="progress-wrap" id="progress-wrap" hidden>
+          <div class="progress-label">
+            <span id="progress-text">准备中…</span>
+            <span class="mono" id="progress-pct">0%</span>
+          </div>
+          <progress id="progress" max="100" value="0" aria-label="转换进度"></progress>
+        </div>
+
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card-base panel results-panel" id="results-panel" aria-labelledby="results-heading" hidden>
+        <div class="panel-head">
+          <h2 id="results-heading">导出结果</h2>
+          <span class="hint" id="results-meta"></span>
+        </div>
+        <div class="result-grid" id="results"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer class="footer">
+    <span>PDF.js 6.4.299</span>
+  </footer>
+</div>
+
+<dialog class="modal" id="password-dialog" aria-labelledby="password-title">
+  <form id="password-form" method="dialog">
+    <input type="text" name="username" autocomplete="username" hidden />
+    <div class="modal-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="10" width="14" height="10" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </svg>
+    </div>
+    <h2 id="password-title">这个 PDF 有密码</h2>
+    <p id="password-hint">输入打开密码。</p>
+    <label class="sr-only" for="password-input">PDF 密码</label>
+    <input type="password" id="password-input" autocomplete="current-password" placeholder="输入密码" />
+    <p class="form-error" id="password-error" hidden></p>
+    <div class="modal-actions">
+      <button class="btn-plain scale-animation" id="password-cancel" type="button">取消</button>
+      <button class="btn-primary" id="password-submit" type="submit">打开 PDF</button>
+    </div>
+  </form>
+</dialog>
+
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
